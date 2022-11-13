@@ -1,0 +1,8 @@
+{
+  "name": "Optiex",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "da7a4c0e"
+}

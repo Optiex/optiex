@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Optiex",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
