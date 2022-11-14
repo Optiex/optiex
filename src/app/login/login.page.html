@@ -1,0 +1,27 @@
+<ion-content class="login-page">
+  <form [formGroup]="credentials">
+    <div class="input-group">
+      <ion-item>
+        <ion-input placeholder="Username" formControlName="email"></ion-input>
+      </ion-item>
+      <!-- <div *ngIf="(email.dirty || email.touched) && email.errors" class="errors">
+        <span *ngIf="email.errors?.required">Username is required</span>
+        <span *ngIf="email.errors?.email">Username is invalid</span>
+      </div> -->
+      <ion-item>
+        <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+      </ion-item>
+      <!-- <div *ngIf="(password.dirty || password.touched) && password.errors" class="errors">
+        <span *ngIf="password.errors?.required">Password is required</span>
+        <span *ngIf="password.errors?.minlength">Password needs to be 6 characters</span>
+      </div> -->
+    </div>
+    
+    <ion-button expand="block" (click)="login()">Log in</ion-button>
+    <ion-button type="button" expand="block" color="light" fill="clear"
+    >Not yet a member? Sign up!
+  </ion-button>
+  
+</form>
+
+</ion-content>
