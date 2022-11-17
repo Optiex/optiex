@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { LoginPage } from './login/login.page';
 
 const routes: Routes = [
   {
@@ -10,12 +9,12 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginPage
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  }
+    path: 'dashboard',
+    loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
 ];
 
 @NgModule({
@@ -24,4 +23,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthenticationServiceService } from '../services/authentication-service.service';
-
-import { Storage } from '@capacitor/storage';
+import { NavController } from '@ionic/angular';
+import { Storage } from '@ionic/storage-angular';
+import { LoginService } from './login.service';
 
 @Component({
   selector: 'app-login',
@@ -12,24 +12,26 @@ import { Storage } from '@capacitor/storage';
 })
 export class LoginPage implements OnInit {
 
-  credentials: FormGroup;
+  credentials!: FormGroup;
 
 	constructor(
 		private fb: FormBuilder,
-		private authService: AuthenticationServiceService,
+		private loginService: LoginService,
+    private storage: Storage,
 		// private alertController: AlertController,
 		private router: Router,
+    private navCtrl: NavController,
 		// private loadingController: LoadingController
 	) {}
 
-	ngOnInit() {
+	async ngOnInit() {
 		this.credentials = this.fb.group({
 			email: ['nikhil', [Validators.required]],
 			password: ['optiex@123', [Validators.required, Validators.minLength(6)]]
 		});
 	}
 
-	async login() {
+	login() {
     console.log(this.credentials.value);
 	let obj = {
 		username: this.credentials.value.email,
@@ -38,8 +40,8 @@ export class LoginPage implements OnInit {
     // const loading = await this.loadingController.create();
 		// await loading.present();
 
-		this.authService.login(obj).subscribe(
-			async (resp) => {
+		this.loginService.login(obj).subscribe(
+			async (resp:any) => {
 				// await loading.dismiss();
 
 				var userDetails = {
@@ -49,12 +51,12 @@ export class LoginPage implements OnInit {
 					user: resp.user,
 					date_joined: resp.date_joined
 				};
-
-				Storage.set({ key: 'user', value: JSON.stringify(userDetails) })
-
-				this.router.navigateByUrl('/folder/Inbox/tab1', { replaceUrl: true });
+        
+				await this.storage.set('user', JSON.stringify(userDetails));
+				this.navCtrl.navigateRoot('/dashboard');
+				// this.navCtrl.navigateRoot('/dashboard/equipments');
 			},
-			async (res) => {
+			async (res:any) => {
 				// await loading.dismiss();
 				// const alert = await this.alertController.create({
 				// 	header: 'Login failed',

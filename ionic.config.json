@@ -1,8 +1,7 @@
 {
-  "name": "Optiex",
+  "name": "testApp",
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular",
-  "id": "da7a4c0e"
+  "type": "angular"
 }
