@@ -10,25 +10,25 @@ const USER_KEY = 'user';
 
 @Injectable()
 export class AuthInterceptorService {
-  
-  
+
+
   constructor(private storage: Storage, private loginService: LoginService, private alertController: AlertController) { }
-  
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     // return next.handle(request); //login request
-    
+
     return from(this.storage.get(USER_KEY))
     .pipe(
       switchMap(token => {
         token = JSON.parse(token);
-        
-        if (token.sessionid) {
-          console.log(token.sessionid)
-          // request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token.sessionid) });
-          request = request.clone({ headers: request.headers.set('Authorization', 'sessionid= ' + token.sessionid) , withCredentials:true});
-        }
-        
+
+        // if (token.sessionid) {
+        //   console.log(token.sessionid)
+        //   request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token.sessionid) });
+        // }
+        request = request.clone({withCredentials:true});
+
         if (!request.headers.has('Content-Type')) {
           request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
         }
@@ -42,8 +42,8 @@ export class AuthInterceptorService {
           catchError((error: HttpErrorResponse) => {
             const status =  error.status;
             const reason = error && error.error.reason ? error.error.reason : '';
-            
-            this.presentAlert(status, reason);
+
+            // this.presentAlert(status, reason);
             return throwError(error);
 
           })
@@ -53,7 +53,7 @@ export class AuthInterceptorService {
   }
 
   async presentAlert(status:any, reason:any) {
-  
+
     const alert = await this.alertController.create({
         header: status + ' Error',
         subHeader: 'Subtitle',
@@ -64,4 +64,3 @@ export class AuthInterceptorService {
     await alert.present();
   }
 }
-    

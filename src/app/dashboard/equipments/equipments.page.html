@@ -3,13 +3,32 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Equipments</ion-title>
+    <ion-title>{{equipments[0]?.department_name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <ion-card color="medium">
+  <ion-list>
+    <ion-item (click)="gotoSensors(equip.id)" *ngFor="let equip of equipments">
+      <ion-label>{{equip.name}}</ion-label>
+      <ion-badge slot="end">{{equip.sensors_count}}</ion-badge>
+    </ion-item>
+  </ion-list>
+
+  <!-- <ion-card color="medium" (click)="gotoSensors(equip.id)" *ngFor="let equip of equipments">
+    <ion-card-header>
+      <ion-card-title>
+        {{equip.name}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        <ion-badge color="warning">{{equip.sensors_count}}</ion-badge>
+      </ion-card-subtitle>
+    </ion-card-header>
+  </ion-card> -->
+
+
+  <!-- <ion-card color="medium" [routerLink]="['/dashboard/sensors/1/data']">
     <ion-card-header>
       <ion-card-title>
         3D-1A-GIW100-400
@@ -18,11 +37,10 @@
         <ion-badge color="warning">11</ion-badge>
       </ion-card-subtitle>
     </ion-card-header>
-    <!-- <ion-card-content>
-    </ion-card-content> -->
   </ion-card>
 
-  <ion-card color="primary">
+
+  <ion-card color="medium" [routerLink]="['/dashboard/sensors/1/data']">
     <ion-card-header>
       <ion-card-title>
         3D-1A-GIW100-400
@@ -31,11 +49,10 @@
         <ion-badge color="warning">11</ion-badge>
       </ion-card-subtitle>
     </ion-card-header>
-    <!-- <ion-card-content>
-    </ion-card-content> -->
   </ion-card>
 
-  <ion-card color="tertiary">
+
+  <ion-card color="medium" [routerLink]="['/dashboard/sensors/1/data']">
     <ion-card-header>
       <ion-card-title>
         3D-1A-GIW100-400
@@ -44,24 +61,10 @@
         <ion-badge color="warning">11</ion-badge>
       </ion-card-subtitle>
     </ion-card-header>
-    <!-- <ion-card-content>
-    </ion-card-content> -->
   </ion-card>
 
-  <ion-card color="success">
-    <ion-card-header>
-      <ion-card-title>
-        3D-1A-GIW100-400
-      </ion-card-title>
-      <ion-card-subtitle>
-        <ion-badge color="warning">11</ion-badge>
-      </ion-card-subtitle>
-    </ion-card-header>
-    <!-- <ion-card-content>
-    </ion-card-content> -->
-  </ion-card>
 
-  <ion-card color="warning">
+  <ion-card color="medium" [routerLink]="['/dashboard/sensors/1/data']">
     <ion-card-header>
       <ion-card-title>
         3D-1A-GIW100-400
@@ -70,8 +73,6 @@
         <ion-badge color="warning">11</ion-badge>
       </ion-card-subtitle>
     </ion-card-header>
-    <!-- <ion-card-content>
-    </ion-card-content> -->
-  </ion-card>
-  
+  </ion-card> -->
+
 </ion-content>

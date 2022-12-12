@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
+import { WebSocketService } from '../web-socket.service';
 import { DashboardService } from './dashboard.service';
 
+const USER_KEY = 'user';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -13,16 +16,24 @@ export class DashboardPage implements OnInit {
     {
       title: 'Departments',
       url: '/dashboard/departments',
-      icon: 'person'
+      icon: 'cog'
     },
     {
-      title: 'Equipements',
-      url: '/dashboard/equipments',
-      icon: 'person'
+      title: 'Alert',
+      url: '/dashboard/alert',
+      icon: 'alert'
     }
   ];
 
-  constructor(private dashboardService: DashboardService) { }
+  sessionId:string = '';
+
+  constructor(private dashboardService: DashboardService,
+    private storage: Storage,
+    private websocketService: WebSocketService) {
+    storage.get(USER_KEY).then((toke:any) => {
+      this.websocket(JSON.parse(toke).sessionid)
+    });
+  }
 
   ngOnInit() {
     console.log('DashboardPage')
@@ -33,10 +44,26 @@ export class DashboardPage implements OnInit {
     this.dashboardService.getDepartmentList()
     .subscribe((data:any) => {
       console.log(data);
-      
+
     });
   }
 
+  websocket(sessionid:any) {
+    var self = this;
+    var socket = new WebSocket(
+      'wss://analytics.optiex.co.in:1994/?session_key='+sessionid
+    );
+    socket.onmessage = function(e) {
+      var data = JSON.parse(e.data);
+      self.websocketService.changeData(data);
+    };
+    socket.onopen = function() {
+      self.websocketService.socket = socket;
+    };
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen(event as any);
+    }
+  }
 
 }
 

@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+<ion-card *ngFor="let sensor of sensors">
+  <!-- <ion-card-header>
+    <ion-card-title>
+      Line Chart
+    </ion-card-title>
+  </ion-card-header> -->
+  <ion-card-content>
+    <app-line-chart [title]="sensor.chart_details.sensor[0].equipment.name" [subtitle]="sensor.chart_details.sensor[0].measured_parameter_type_disp" [series]="series" [data]="sensor"></app-line-chart>
+  </ion-card-content>
+</ion-card>
+
+
+</ion-content>

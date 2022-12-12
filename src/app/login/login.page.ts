@@ -37,6 +37,7 @@ export class LoginPage implements OnInit {
 		username: this.credentials.value.email,
 		password:this.credentials.value.password
 	}
+	this.navCtrl.navigateRoot('/dashboard/departments');
     // const loading = await this.loadingController.create();
 		// await loading.present();
 
@@ -51,9 +52,9 @@ export class LoginPage implements OnInit {
 					user: resp.user,
 					date_joined: resp.date_joined
 				};
-        
+
 				await this.storage.set('user', JSON.stringify(userDetails));
-				this.navCtrl.navigateRoot('/dashboard');
+				this.navCtrl.navigateRoot('/dashboard/departments');
 				// this.navCtrl.navigateRoot('/dashboard/equipments');
 			},
 			async (res:any) => {

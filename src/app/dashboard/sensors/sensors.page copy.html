@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Sensors</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngIf="id == null || id == 'null'">
+    <ion-item>
+      <ion-select placeholder="Select Department" [interfaceOptions]="customAlertOptions" interface="alert">
+        <ion-select-option value="apples">Department 1</ion-select-option>
+        <ion-select-option value="oranges">Department 2</ion-select-option>
+        <ion-select-option value="bananas">Department 3</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select placeholder="Select Equipment" [interfaceOptions]="customAlertOptions" interface="alert">
+        <ion-select-option value="apples">Department 1</ion-select-option>
+        <ion-select-option value="oranges">Department 2</ion-select-option>
+        <ion-select-option value="bananas">Department 3</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="data">
+        <!-- <ion-icon name="calendar"></ion-icon> -->
+        <ion-label>Data</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="all">
+        <!-- <ion-icon name="person-circle"></ion-icon> -->
+        <ion-label>All</ion-label>
+      </ion-tab-button>
+
+    </ion-tab-bar>
+  </ion-tabs>
+
+</ion-content>

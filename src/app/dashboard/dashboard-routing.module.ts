@@ -9,19 +9,32 @@ const routes: Routes = [
     component: DashboardPage,
     children: [
       {
-        path: 'equipments',
+        path: 'departments',
+        loadChildren: () => import('./departments/departments.module').then( m => m.DepartmentsPageModule)
+      },
+      {
+        path: 'department/:id',
+        loadChildren: () => import('./department/department.module').then( m => m.DepartmentPageModule)
+      },
+      {
+        path: 'equipments/:id',
         loadChildren: () => import('./equipments/equipments.module').then( m => m.EquipmentsPageModule)
       },
       {
-        path: 'departments',
-        loadChildren: () => import('./departments/departments.module').then( m => m.DepartmentsPageModule)
+        path: 'sensors/:id',
+        loadChildren: () => import('./sensors/sensors.module').then( m => m.SensorsPageModule)
+      },
+      {
+        path: 'alert',
+        loadChildren: () => import('./alert/alert.module').then( m => m.AlertPageModule)
       }
     ]
+  },
+  {
+    path: 'sensors',
+    loadChildren: () => import('./sensors/sensors.module').then( m => m.SensorsPageModule)
   }
-  // ,{
-  //   path: 'departments',
-  //   loadChildren: () => import('./departments/departments.module').then( m => m.DepartmentsPageModule)
-  // }
+
 ];
 
 @NgModule({

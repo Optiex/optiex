@@ -1,0 +1,47 @@
+{
+    "status": true,
+    "data": [
+      {
+        "id": 29,
+        "name": "3D-1A-GIW100-400",
+        "department": 8,
+        "department_name": "Fine Slurry",
+        "sensors_count": 28
+      },
+      {
+        "id": 30,
+        "name": "3D-1B-GIW100-400",
+        "department": 8,
+        "department_name": "Fine Slurry",
+        "sensors_count": 32
+      },
+      {
+        "id": 25,
+        "name": "18A-3B-CPKG250-500",
+        "department": 5,
+        "department_name": "Mixed Liquor Section",
+        "sensors_count": 26
+      },
+      {
+        "id": 26,
+        "name": "18A-3A-CPKG250-500",
+        "department": 5,
+        "department_name": "Mixed Liquor Section",
+        "sensors_count": 27
+      },
+      {
+        "id": 27,
+        "name": "4E-10A-CPKG250-500",
+        "department": 6,
+        "department_name": "Booster Pump Section",
+        "sensors_count": 25
+      },
+      {
+        "id": 28,
+        "name": "4E-10B-CPKG250-500",
+        "department": 6,
+        "department_name": "Booster Pump Section",
+        "sensors_count": 29
+      }
+    ]
+  }

@@ -15,6 +15,8 @@ import { EquipmentsPage } from './equipments.page';
     IonicModule,
     EquipmentsPageRoutingModule
   ],
-  declarations: [EquipmentsPage]
+  declarations: [
+    EquipmentsPage,
+  ]
 })
 export class EquipmentsPageModule {}
