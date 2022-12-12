@@ -41,28 +41,28 @@ export class SensorsPage implements OnInit {
   ngOnInit() {
 
     this.storage.get('dept').then((dept: any) => {
-      console.log(dept);
       this.title = JSON.parse(dept).name;
     });
 
     this.getSensors();
-    this.series =[
-      {
-        name: "Desktops",
-        data: [50, 41, 35, 51, 49, 62, 69, 91, 148]
-      }
+    let data = [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 }];
+    this.series.push({'name':'SIS090572-PV33','data':data});
+    // this.series = [
+      // {
+      //   name: "Desktops",
+      //   data: [50, 41, 35, 51, 49, 62, 69, 91, 148]
+      // }
       // ,{
       //   name: "Laptop",
       //   data: [31, 21, 65, 21, 49, 72, 19, 81, 100]
       // }
-    ];
+    // ];
 
   }
 
   getSensors() {
     this.http.get('assets/sensors.json').subscribe((res:any) => {
       this.sensors = res.data;
-      console.log(this.sensors[0]);
 
     },
     (err:any) => {

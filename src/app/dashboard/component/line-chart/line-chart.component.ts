@@ -13,6 +13,7 @@ import {
   ApexNonAxisChartSeries,
   ApexLegend
 } from "ng-apexcharts";
+import { WebSocketService } from 'src/app/web-socket.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -37,28 +38,27 @@ export class LineChartComponent implements OnInit,OnChanges {
   public chartOptions: Partial<ChartOptions>;
 
   @Input() title: any;
-  @Input() series: any;
+  series: any = [];
   @Input() subtitle: any;
   @Input() data: any;
 
-  constructor(public platform:Platform) {
+  constructor(public platform:Platform, public websocketService: WebSocketService) {
   }
 
   ngOnInit() {
     console.log('LineChartComponent')
-    console.log(this.data);
+    // console.log(this.data);
+    this.data.chart_details.sensor.forEach((element:any) => {
+      this.series.push({name: element.uuid, data:[]});
+      console.log(this.series);
+    });
     this.chartConfig();
     this.drawChart();
   }
 
   chartConfig(){
     this.chartOptions = {
-      series: [
-        {
-          name: "Desktops",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-        }
-      ],
+      series: [],
       chart: {
         height: 350,
         type: "line",
@@ -74,11 +74,11 @@ export class LineChartComponent implements OnInit,OnChanges {
         width: 2
       },
       title: {
-        text: "Product Trends by Month",
+        text: "",
         align: "center"
       },
       subtitle: {
-        text: "Product Trends by Month",
+        text: "",
         align: "center"
       },
       legend: {
@@ -95,20 +95,7 @@ export class LineChartComponent implements OnInit,OnChanges {
         }
       },
       xaxis: {
-        categories: [
-          'Dec 2:42',
-          'Dec 2:52',
-          'Dec 3:10',
-          'Dec 3:20',
-          'Dec 3:30',
-          'Dec 3:40',
-          'Dec 3:50',
-          'Dec 3:60',
-          'Dec 3:70',
-          'Dec 3:80',
-          'Dec 3:90',
-          'Dec 4:00',
-        ]
+        type: 'datetime'
       }
     };
   }
@@ -116,14 +103,42 @@ export class LineChartComponent implements OnInit,OnChanges {
 
   drawChart() {
     setTimeout(() => {
+
+      // let data = [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 }];
+      // this.series.push({'name':'SIS090572-PV33','data':data});
+
       // this.chartOptions.series = this.series;
-      this.chartOptions.series = [{
-        name: "SIS090572-PV33",
-        data: [0, 0, 35, 35, 35, 35, 0, 0, 0, 0],
-      }];
+      // console.log(this.chartOptions.series)
       this.chartOptions.title = {text:this.title};
       this.chartOptions.subtitle = {text:this.subtitle};
+
+      this.websocketService.sensorData.subscribe(data => {
+        // if (this.ageType == 'live') { // live graph check
+          this.updateSocketData(data);
+        // }
+      });
+
     },1000)
+  }
+
+  updateSocketData(data:any) {
+    for (let key in data) {
+      for (let i = 0; i < this.series.length; i++) {
+        if (this.series[i]['name'] == key) {
+          let obj = {
+            y: data[key][0]['value'],
+            x: this.convertUTCDateToLocalDate(data[key][0]['timestamp']).getTime(),
+            parameters: data[key][0]['parameters']
+          }
+          this.series[i].data = this.series[i].data.concat([obj]);
+          // console.log(this.series[i].data);
+        }
+      }
+    }
+    this.chartOptions.series = this.series;
+    // console.log(this.chartOptions.series);
+    this.chart.updateSeries(this.series);
+
   }
 
   ngOnChanges(){
