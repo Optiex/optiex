@@ -11,6 +11,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { DataComponent } from './data/data.component';
 import { AllComponent } from './all/all.component';
 import { LineChartComponent } from '../component/line-chart/line-chart.component';
+import { SemiCircleChartComponent } from '../component/semi-circle-chart/semi-circle-chart.component';
+import { ColumnChartComponent } from '../component/column-chart/column-chart.component';
 
 @NgModule({
   imports: [
@@ -24,7 +26,9 @@ import { LineChartComponent } from '../component/line-chart/line-chart.component
     SensorsPage,
     DataComponent,
     AllComponent,
-    LineChartComponent
+    LineChartComponent,
+    SemiCircleChartComponent,
+    ColumnChartComponent
   ]
 })
 export class SensorsPageModule {}

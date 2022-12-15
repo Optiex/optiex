@@ -10,9 +10,11 @@
 <ion-content>
 
 
-<ion-card *ngFor="let sensor of sensors">
+<ion-card *ngFor="let sensor of sensors; let index">
   <ion-card-content>
-    <app-line-chart [title]="sensor.chart_details.sensor[0].equipment.name" [subtitle]="sensor.chart_details.sensor[0].measured_parameter_type_disp" [data]="sensor"></app-line-chart>
+    <app-column-chart [title]="sensor.chart_details.sensor[0].equipment.name" [subtitle]="sensor.chart_details.sensor[0].measured_parameter_type_disp" [data]="sensor"></app-column-chart>
+    <!-- <app-semi-circle-chart [title]="sensor.chart_details.sensor[0].equipment.name" [subtitle]="sensor.chart_details.sensor[0].measured_parameter_type_disp" [data]="sensor"></app-semi-circle-chart> -->
+    <!-- <app-line-chart [title]="sensor.chart_details.sensor[0].equipment.name" [subtitle]="sensor.chart_details.sensor[0].measured_parameter_type_disp" [data]="sensor"></app-line-chart> -->
   </ion-card-content>
 </ion-card>
 

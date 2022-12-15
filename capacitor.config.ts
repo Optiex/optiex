@@ -1,10 +1,16 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'testApp',
+  appId: 'in.co.optiex',
+  appName: 'Optiex',
   webDir: 'www',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  server: {
+    allowNavigation: []
+  },
+  android: {
+    allowMixedContent: true
+  }
 };
 
 export default config;
