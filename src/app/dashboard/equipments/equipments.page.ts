@@ -20,13 +20,18 @@ export class EquipmentsPage implements OnInit {
   }
 
   getEquipments() {
-    this.http.get('assets/8.json').subscribe((res:any) => {
-      this.equipments = res.data;
-      console.log(this.equipments);
-    },
-    (err:any) => {
-      console.log(err);
-    });
+    // this.http.get('assets/8.json').subscribe((res:any) => {
+    //   this.equipments = res.data;
+    //   console.log(this.equipments);
+    // },
+    // (err:any) => {
+    //   console.log(err);
+    // });
+    // this.departmentsService.getDepartments()
+    // .subscribe((res) => {
+    //   console.log(res);
+    //   this.departments = res.data;
+    // });
   }
 
   gotoSensors(id:any) {

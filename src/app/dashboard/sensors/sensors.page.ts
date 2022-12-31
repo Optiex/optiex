@@ -5,6 +5,7 @@ import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { AllComponent } from './all/all.component';
 import { DataComponent } from './data/data.component';
+import { SensorService } from './sensor.service';
 
 @Component({
   selector: 'app-sensors',
@@ -26,6 +27,7 @@ export class SensorsPage implements OnInit {
   constructor(public activatedRoute: ActivatedRoute,
     public http: HttpClient,
     private storage:Storage,
+    private sensorService: SensorService,
     private navCtrl: NavController,
     private router:Router) {
 
@@ -45,29 +47,23 @@ export class SensorsPage implements OnInit {
     });
 
     this.getSensors();
-    let data = [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 }];
-    this.series.push({'name':'SIS090572-PV33','data':data});
-    // this.series = [
-      // {
-      //   name: "Desktops",
-      //   data: [50, 41, 35, 51, 49, 62, 69, 91, 148]
-      // }
-      // ,{
-      //   name: "Laptop",
-      //   data: [31, 21, 65, 21, 49, 72, 19, 81, 100]
-      // }
-    // ];
-
   }
 
   getSensors() {
-    this.http.get('assets/sensors.json').subscribe((res:any) => {
-      this.sensors = res.data;
+    // this.http.get('assets/sensors.json').subscribe((res:any) => {
+    //   this.sensors = res.data;
+    // },
+    // (err:any) => {
+    //   console.log(err);
+    // });
 
-    },
-    (err:any) => {
-      console.log(err);
+    this.sensorService.getGraphs(this.id).subscribe((resp: any) => {
+      console.log(resp);
+      this.sensors = resp.data;
     });
+
   }
+
+
 
 }

@@ -33,6 +33,18 @@ const routes: Routes = [
   {
     path: 'sensors',
     loadChildren: () => import('./sensors/sensors.module').then( m => m.SensorsPageModule)
+  },
+  {
+    path: 'report',
+    loadChildren: () => import('./report/report.module').then( m => m.ReportPageModule)
+  },
+  {
+    path: 'tables',
+    loadChildren: () => import('./tables/tables.module').then( m => m.TablesPageModule)
+  },
+  {
+    path: 'table/:id',
+    loadChildren: () => import('./table/table.module').then( m => m.TablePageModule)
   }
 
 ];

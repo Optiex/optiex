@@ -23,10 +23,11 @@ export class AuthInterceptorService {
       switchMap(token => {
         token = JSON.parse(token);
 
-        // if (token.sessionid) {
-        //   console.log(token.sessionid)
-        //   request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token.sessionid) });
-        // }
+        if (token.sessionid) {
+          console.log(token.sessionid)
+          // request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token.sessionid) });
+          request = request.clone({ headers: request.headers.set('Authorization', token.sessionid) });
+        }
         request = request.clone({withCredentials:true});
 
         if (!request.headers.has('Content-Type')) {

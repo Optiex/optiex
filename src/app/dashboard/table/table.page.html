@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Table</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngFor="let key of objectKeys(formData || {})">
+
+    <ion-item *ngIf="formData[key].data_type == 'datetime'">
+      <ion-label position="stacked">{{formData[key].title}}</ion-label>
+      <ion-input value="{{ formData[key].value | date: 'dd/MM/yyyy hh:mm a' }}" id="date_{{key}}"></ion-input>
+      <ion-popover trigger="date_{{key}}">
+        <ng-template>
+          <ion-datetime presentation="date-time" [(ngModel)]="formData[key].value"></ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+
+    <ion-item *ngIf="formData[key].data_type == 'date'">
+      <ion-label position="stacked">{{formData[key].title}}</ion-label>
+      <ion-input value="{{ formData[key].value | date: 'dd/MM/yyyy' }}" id="date_{{key}}"></ion-input>
+      <ion-popover trigger="date_{{key}}">
+        <ng-template>
+          <ion-datetime presentation="date" [(ngModel)]="formData[key].value"></ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+
+    <ion-item *ngIf="formData[key].data_type == 'dropdown'">
+      <ion-label position="stacked">{{formData[key].title}}</ion-label>
+      <ion-select placeholder="Select {{formData[key].title}}" [(ngModel)]="formData[key].value">
+        <ion-select-option [value]="val" *ngFor="let val of formData[key].values">{{val.title}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-card class="card-header" *ngIf="formData[key].data_type == 'list'">
+      <ion-card-header class="card-title">
+        <ion-card-subtitle>{{formData[key].title}}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content class="card-content">
+        <ion-accordion-group >
+          <ion-accordion *ngFor="let table of tableData; index as i">
+            <ion-item slot="header" color="light">
+              <ion-label>Row {{i+1}}</ion-label>
+            </ion-item>
+            <div class="ion-padding" slot="content">
+              <ion-item *ngFor="let tab of table">
+                <ion-label position="stacked">{{tab.title}}</ion-label>
+                <ion-input *ngIf="tab.data_type == 'string'" type="text" [value]="tab.value" [(ngModel)]="tab.value"></ion-input>
+                <ion-input *ngIf="tab.data_type == 'number'" type="number" [value]="tab.value" [(ngModel)]="tab.value"></ion-input>
+              </ion-item>
+            </div>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ion-card-content>
+    </ion-card>
+
+
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="footer">
+    <ion-button fill="clear" class="btn-left" (click)="save()">Back</ion-button>
+    <ion-button fill="clear" class="btn-right" (click)="save()">Save</ion-button>
+  </ion-toolbar>
+</ion-footer>

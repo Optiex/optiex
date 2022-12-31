@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tables</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item (click)="gotoTable(table)" *ngFor="let table of tables">
+      <ion-label>{{table.title}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

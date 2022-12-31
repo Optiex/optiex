@@ -22,6 +22,11 @@ export class DashboardPage implements OnInit {
       title: 'Alert',
       url: '/dashboard/alert',
       icon: 'alert'
+    },
+    {
+      title: 'Reports',
+      url: '/dashboard/report',
+      icon: 'copy'
     }
   ];
 
