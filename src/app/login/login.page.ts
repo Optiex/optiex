@@ -37,13 +37,15 @@ export class LoginPage implements OnInit {
 		username: this.credentials.value.email,
 		password:this.credentials.value.password
 	}
-	this.navCtrl.navigateRoot('/dashboard/departments');
+	// this.navCtrl.navigateRoot('/dashboard/departments');
     // const loading = await this.loadingController.create();
 		// await loading.present();
 
 		this.loginService.login(obj).subscribe(
 			async (resp:any) => {
 				// await loading.dismiss();
+				alert('login success')
+				alert(resp)
 
 				var userDetails = {
 					username: resp.username,
@@ -58,6 +60,8 @@ export class LoginPage implements OnInit {
 				// this.navCtrl.navigateRoot('/dashboard/equipments');
 			},
 			async (res:any) => {
+				alert('login Error')
+				alert(JSON.stringify(res))
 				// await loading.dismiss();
 				// const alert = await this.alertController.create({
 				// 	header: 'Login failed',

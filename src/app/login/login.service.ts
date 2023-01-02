@@ -12,6 +12,7 @@ export class LoginService {
   constructor(private http: HttpClient, private storage: Storage) { }
 
   login(credentials: { username:any; password:any }): Observable<any> {
+    console.log(`${environment.SERVER_ADDRESS}/c/login/`);
     return this.http.post(`${environment.SERVER_ADDRESS}/c/login/`, credentials);
   }
 

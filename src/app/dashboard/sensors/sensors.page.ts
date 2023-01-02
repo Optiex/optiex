@@ -60,6 +60,7 @@ export class SensorsPage implements OnInit {
     this.sensorService.getGraphs(this.id).subscribe((resp: any) => {
       console.log(resp);
       this.sensors = resp.data;
+      console.log(this.sensors);
     });
 
   }

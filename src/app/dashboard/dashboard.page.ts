@@ -18,11 +18,11 @@ export class DashboardPage implements OnInit {
       url: '/dashboard/departments',
       icon: 'cog'
     },
-    {
-      title: 'Alert',
-      url: '/dashboard/alert',
-      icon: 'alert'
-    },
+    // {
+    //   title: 'Alert',
+    //   url: '/dashboard/alert',
+    //   icon: 'alert'
+    // },
     {
       title: 'Reports',
       url: '/dashboard/report',

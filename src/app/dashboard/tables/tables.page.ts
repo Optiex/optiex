@@ -18,6 +18,7 @@ export class TablesPage implements OnInit {
   }
 
   ngOnInit() {
+    this.tables = [{title:'Test',uuid:'asdasdsd'}]
     this.getSchema();
   }
 

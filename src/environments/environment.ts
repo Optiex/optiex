@@ -1,7 +1,8 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const HOSTNAME = '192.168.15.252'
+// const HOSTNAME = '192.168.15.252'
+const HOSTNAME = 'analytics.optiex.co.in';
 export const environment = {
   production: false,
   SERVER_ADDRESS: `https://${HOSTNAME}:1992`

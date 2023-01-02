@@ -52,6 +52,9 @@
                 <ion-label position="stacked">{{tab.title}}</ion-label>
                 <ion-input *ngIf="tab.data_type == 'string'" type="text" [value]="tab.value" [(ngModel)]="tab.value"></ion-input>
                 <ion-input *ngIf="tab.data_type == 'number'" type="number" [value]="tab.value" [(ngModel)]="tab.value"></ion-input>
+                <ion-select *ngIf="tab.data_type == 'dropdown'" [value]="tab.value" [(ngModel)]="tab.value">
+                  <ion-select-option [value]="val" *ngFor="let val of tab.values">{{val.title}}</ion-select-option>
+                </ion-select>
               </ion-item>
             </div>
           </ion-accordion>
