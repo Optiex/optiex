@@ -49,6 +49,7 @@ export class LineChartComponent implements OnInit,OnChanges {
   ageType:string = 'live';
   sensorsUUID:any = [];
   dataLimit = 20;
+  socketSub:any;
 
   constructor(public platform:Platform,
     public websocketService: WebSocketService,
@@ -150,7 +151,7 @@ export class LineChartComponent implements OnInit,OnChanges {
         }
       };
 
-      this.websocketService.sensorData.subscribe(data => {
+      this.socketSub =  this.websocketService.sensorData.subscribe(data => {
         if (this.ageType == 'live') { // live graph check
           this.updateSocketData(data);
         }
@@ -176,12 +177,17 @@ export class LineChartComponent implements OnInit,OnChanges {
     console.log(this.series);
     this.chartOptions.series = this.series;
     // console.log(this.chartOptions.series);
-    this.chart.updateSeries(this.series);
+    if(this.chart){
+      this.chart.updateSeries(this.series);
+    }
 
   }
 
   ngOnChanges(){
     console.log(this.chart);
+  }
+  ngOnDestroy(){
+    this.socketSub.unsubscribe();
   }
 
   ionViewWillEnter() {

@@ -1,6 +1,7 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { TableService } from './table.service';
 
@@ -22,6 +23,9 @@ export class TablePage implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
     private tableService: TableService,
+    public loadingController: LoadingController,
+    private alertController: AlertController,
+    private location: Location,
     private storage: Storage,
     public datepipe: DatePipe) {
       this.activatedRoute.params.subscribe((params:any) => {
@@ -91,48 +95,48 @@ export class TablePage implements OnInit {
               "value": "C"
             }
           }]
-      }
-  };
+          }
+      };
 
 
   // this.storage.get('table').then((table: any) => {
   //   this.formData = JSON.parse(table).schema;
-  console.log(this.formData);
-  for(let form in this.formData){
-    console.log(form)
+    console.log(this.formData);
+    for(let form in this.formData){
+      console.log(form)
 
-    if(this.formData[form].data_type == 'datetime'){
-      this.formData[form].value = '';
-    }
-    if(this.formData[form].data_type == 'date'){
-      this.formData[form].value = '';
-    }
-    if(this.formData[form].data_type == 'dropdown'){
-      this.formData[form].value = {};
-    }
-    if(this.formData[form].data_type == 'list'){
-      this.formData[form].value = [];
-      this.formData[form].title = 'Table Rows';
-    }
-  }
-  console.log(this.formData.rows);
-  console.log(this.formData.rows.default_value);
-  this.formData.rows.default_value.forEach((elmt:any) => {
-    let row = [];
-    for(let shm in this.formData.rows.schema){
-      let obj:any = {
-        title: this.formData.rows.schema[shm].title,
-        data_type:this.formData.rows.schema[shm].data_type,
-        value: elmt[shm],
-        values: this.formData.rows.schema[shm].values,
-        field: shm
+      if(this.formData[form].data_type == 'datetime'){
+        this.formData[form].value = '';
       }
-      row.push(obj);
+      if(this.formData[form].data_type == 'date'){
+        this.formData[form].value = '';
+      }
+      if(this.formData[form].data_type == 'dropdown'){
+        this.formData[form].value = {};
+      }
+      if(this.formData[form].data_type == 'list'){
+        this.formData[form].value = [];
+        this.formData[form].title = 'Table Rows';
+      }
     }
-    this.tableData.push(row);
-  });
+    console.log(this.formData.rows);
+    console.log(this.formData.rows.default_value);
+    this.formData.rows.default_value.forEach((elmt:any) => {
+      let row = [];
+      for(let shm in this.formData.rows.schema){
+        let obj:any = {
+          title: this.formData.rows.schema[shm].title,
+          data_type:this.formData.rows.schema[shm].data_type,
+          value: elmt[shm],
+          values: this.formData.rows.schema[shm].values,
+          field: shm
+        }
+        row.push(obj);
+      }
+      this.tableData.push(row);
+    });
 
-  console.log(this.tableData);
+    console.log(this.tableData);
 
   // });
 
@@ -140,7 +144,10 @@ export class TablePage implements OnInit {
 }
 
 
-save(){
+async save(){
+  const loading = await this.loadingController.create();
+  await loading.present();
+
   this.tableData.forEach((table:any) => {
     let obj:any = {};
     table.forEach((tab:any) => {
@@ -170,10 +177,35 @@ save(){
   }
 
   this.tableService.saveFormSchemaValue(data)
-  .subscribe((res:any) => {
+  .subscribe(async (res:any) => {
+    await loading.dismiss();
+    const alert = await this.alertController.create({
+      // header: '',
+      // subHeader: 'Subtitle',
+      message: 'Saved Successfully!',
+      // buttons: ['OK']
+    });
+    await alert.present();
+
+    this.location.back();
+
+  }, async (res:any) => {
+    await loading.dismiss();
+    const alert = await this.alertController.create({
+      // header: '',
+      // subHeader: 'Subtitle',
+      message: 'Saved Successfully!',
+      // buttons: ['OK']
+    });
+
+    await alert.present();
     console.log(res);
   });
+
 }
 
+back(){
+  this.location.back();
+}
 
 }

@@ -32,10 +32,15 @@ export class DashboardPage implements OnInit {
 
   sessionId:string = '';
 
+  user:any;
+  role:any;
+
   constructor(private dashboardService: DashboardService,
     private storage: Storage,
     private websocketService: WebSocketService) {
     storage.get(USER_KEY).then((toke:any) => {
+      this.user = JSON.parse(toke).user;
+      this.role = JSON.parse(toke).role;
       this.websocket(JSON.parse(toke).sessionid)
     });
   }

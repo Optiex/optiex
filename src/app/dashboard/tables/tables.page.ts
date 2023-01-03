@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { TablesService } from './tables.service';
 
@@ -14,19 +15,28 @@ export class TablesPage implements OnInit {
 
   constructor(private router: Router,
     public tablesService: TablesService,
+    public loadingController: LoadingController,
     public storage: Storage) {
   }
 
   ngOnInit() {
-    this.tables = [{title:'Test',uuid:'asdasdsd'}]
+    // this.tables = [{title:'Test',uuid:'asdasdsd'}]
     this.getSchema();
   }
 
-  getSchema(){
-    this.tablesService.getSchema().subscribe((schema:any) => {
-      console.log(schema);
-      this.tables = schema.data;
-    });
+  async getSchema(){
+    const loading = await this.loadingController.create();
+    await loading.present();
+
+    this.tablesService.getSchema().subscribe(
+      async (schema:any) => {
+        await loading.dismiss();
+        console.log(schema);
+        this.tables = schema.data;
+      },
+      async (schema:any) => {
+        await loading.dismiss();
+      });
   }
 
   async gotoTable(table:any){

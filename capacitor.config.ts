@@ -6,11 +6,14 @@ const config: CapacitorConfig = {
   webDir: 'www',
   bundledWebRuntime: false,
   server: {
-    allowNavigation: []
-  },
-  android: {
-    allowMixedContent: true
+    androidScheme: "https",
+    cleartext: true,
+    allowNavigation: ['https://analytics.optiex.co.in:1992/*']
   }
+  // ,
+  // android: {
+  //   allowMixedContent: true
+  // }
 };
 
 export default config;

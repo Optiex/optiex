@@ -27,17 +27,18 @@ const routes: Routes = [
       {
         path: 'alert',
         loadChildren: () => import('./alert/alert.module').then( m => m.AlertPageModule)
-      }
+      },
+      {
+        path: 'report',
+        loadChildren: () => import('./report/report.module').then( m => m.ReportPageModule)
+      },
     ]
   },
   {
     path: 'sensors',
     loadChildren: () => import('./sensors/sensors.module').then( m => m.SensorsPageModule)
   },
-  {
-    path: 'report',
-    loadChildren: () => import('./report/report.module').then( m => m.ReportPageModule)
-  },
+
   {
     path: 'tables',
     loadChildren: () => import('./tables/tables.module').then( m => m.TablesPageModule)
