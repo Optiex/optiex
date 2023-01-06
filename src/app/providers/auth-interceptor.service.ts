@@ -38,7 +38,6 @@ export class AuthInterceptorService {
           token = JSON.parse(token);
 
           if (token.sessionid) {
-            console.log(token.sessionid)
             request = request.clone({ headers: request.headers.set('Authorization', token.sessionid) });
           }
           // request = request.clone({withCredentials:true});

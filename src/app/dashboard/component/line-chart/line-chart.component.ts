@@ -74,6 +74,15 @@ export class LineChartComponent implements OnInit,OnChanges {
       // toolbar: {
       //   show: false
       // },
+      tooltip: {
+        enabled:false,
+        shared:true,
+        custom: function({series, seriesIndex, dataPointIndex, w}) {
+          return '<div class="arrow_box">' +
+            '<span>' + series[seriesIndex][dataPointIndex] + '</span>' +
+            '</div>'
+        }
+      },
       chart: {
         height: 350,
         type: "line",
@@ -117,6 +126,14 @@ export class LineChartComponent implements OnInit,OnChanges {
       },
       xaxis: {
         type: 'datetime',
+        labels: {
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          }
+        }
       },
       yaxis: {
         title: {
@@ -150,6 +167,9 @@ export class LineChartComponent implements OnInit,OnChanges {
           fontSize: '14px'
         }
       };
+      this.chartOptions.yaxis = {
+        title: { text: this.data.chart_details.sensor[0]['unit_disp']}
+      };
 
       this.socketSub =  this.websocketService.sensorData.subscribe(data => {
         if (this.ageType == 'live') { // live graph check
@@ -161,11 +181,12 @@ export class LineChartComponent implements OnInit,OnChanges {
   }
 
   updateSocketData(data:any) {
+    // console.log(data);
     for (let key in data) {
       for (let i = 0; i < this.series.length; i++) {
         if (this.series[i]['name'] == key) {
           let obj = {
-            y: data[key][0]['value'],
+            y: data[key][0]['value'].toFixed(2),
             x: this.convertUTCDateToLocalDate(data[key][0]['timestamp']).getTime(),
             parameters: data[key][0]['parameters']
           }
@@ -261,7 +282,7 @@ export class LineChartComponent implements OnInit,OnChanges {
             }
           };
           let obj = {
-            y: data[i]["value"].toFixed(4),
+            y: data[i]["value"].toFixed(2),
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             marker: marker,
             alert: data[i]["alert"],
@@ -275,10 +296,11 @@ export class LineChartComponent implements OnInit,OnChanges {
           }
         } else if (data[i]["alert"]["alert_type"] != 'error_code') {
           let obj = {
-            y: data[i]["value"].toFixed(4),
+            y: data[i]["value"].toFixed(2),
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             parameters: data[i]["parameters"]
           }
+          console.log(obj)
           lst.push(obj)
         }
       }

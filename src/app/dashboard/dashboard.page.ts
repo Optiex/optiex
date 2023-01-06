@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { WebSocketService } from '../web-socket.service';
 import { DashboardService } from './dashboard.service';
@@ -12,7 +13,7 @@ const USER_KEY = 'user';
 export class DashboardPage implements OnInit {
 
   activePageTitle = 'Dashboard';
-  Pages = [
+  pages = [
     {
       title: 'Departments',
       url: '/dashboard/departments',
@@ -27,6 +28,11 @@ export class DashboardPage implements OnInit {
       title: 'Reports',
       url: '/dashboard/report',
       icon: 'copy'
+    },
+    {
+      title: 'Logout',
+      url: null,
+      icon: 'log-out'
     }
   ];
 
@@ -37,6 +43,7 @@ export class DashboardPage implements OnInit {
 
   constructor(private dashboardService: DashboardService,
     private storage: Storage,
+    private navCtrl: NavController,
     private websocketService: WebSocketService) {
     storage.get(USER_KEY).then((toke:any) => {
       this.user = JSON.parse(toke).user;
@@ -73,6 +80,11 @@ export class DashboardPage implements OnInit {
     if (socket.readyState == WebSocket.OPEN) {
       socket.onopen(event as any);
     }
+  }
+
+  logout(){
+    this.navCtrl.navigateRoot('/login');
+    this.storage.clear();
   }
 
 }
