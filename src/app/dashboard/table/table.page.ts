@@ -41,66 +41,66 @@ export class TablePage implements OnInit {
     }
 
     prepareForm() {
-      this.formData =
-        {
-          "from_datetime": {
-            "data_type": "date",
-            "title": "From Date"
-          },
-          "to_datetime": {
-            "data_type": "datetime",
-            "title": "To Date"
-          },
-          "rows": {
-            "data_type": "list",
-            "title":"Table Rows",
-            "schema": {
-              "shift": {
-                "data_type": "dropdown",
-                "title": "To Date",
-                "values": [
-                  {
-                    "title": "Shift A",
-                    "value": "A"
-                  },
-                  {
-                    "title": "Shift B",
-                    "value": "B"
-                  },
-                  {
-                    "title": "Shift C",
-                    "value": "C"
-                  }
-                ]
-              },
-              "ton": {
-                "title": "Ton",
-                "data_type": "string"
-              }
-            },
-            "default_value": [
-              {
-                "shift":{
-                  "title": "Shift A",
-                  "value": "A"
-                }
-              },
-              {"shift":{
-                "title": "Shift B",
-                "value": "B"
-              }
-            },
-            {"shift":{
-              "title": "Shift C",
-              "value": "C"
-            }
-          }]
-          }
-      };
+      // this.formData =
+      //   {
+      //     "from_datetime": {
+      //       "data_type": "date",
+      //       "title": "From Date"
+      //     },
+      //     "to_datetime": {
+      //       "data_type": "datetime",
+      //       "title": "To Date"
+      //     },
+      //     "rows": {
+      //       "data_type": "list",
+      //       "title":"Table Rows",
+      //       "schema": {
+      //         "shift": {
+      //           "data_type": "dropdown",
+      //           "title": "To Date",
+      //           "values": [
+      //             {
+      //               "title": "Shift A",
+      //               "value": "A"
+      //             },
+      //             {
+      //               "title": "Shift B",
+      //               "value": "B"
+      //             },
+      //             {
+      //               "title": "Shift C",
+      //               "value": "C"
+      //             }
+      //           ]
+      //         },
+      //         "ton": {
+      //           "title": "Ton",
+      //           "data_type": "string"
+      //         }
+      //       },
+      //       "default_value": [
+      //         {
+      //           "shift":{
+      //             "title": "Shift A",
+      //             "value": "A"
+      //           }
+      //         },
+      //         {"shift":{
+      //           "title": "Shift B",
+      //           "value": "B"
+      //         }
+      //       },
+      //       {"shift":{
+      //         "title": "Shift C",
+      //         "value": "C"
+      //       }
+      //     }]
+      //     }
+      // };
 
 
-  // this.storage.get('table').then((table: any) => {
-  //   this.formData = JSON.parse(table).schema;
+  this.storage.get('table').then((table: any) => {
+    this.formData = JSON.parse(table).schema;
     console.log(this.formData);
     for(let form in this.formData){
       console.log(form)
@@ -138,7 +138,7 @@ export class TablePage implements OnInit {
 
     console.log(this.tableData);
 
-  // });
+  });
 
 
 }
@@ -173,6 +173,7 @@ async save(){
 
   let data = {
     form_schema_id:this.id,
+    form_schema:this.formData,
     data: this.saveData
   }
 
