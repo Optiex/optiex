@@ -14,6 +14,7 @@ export class TablePage implements OnInit {
   id:any;
   formData:any;
   date:any;
+  tableObj: any;
   objectKeys = Object.keys;
 
   tableData:any = [];
@@ -100,6 +101,7 @@ export class TablePage implements OnInit {
 
 
   this.storage.get('table').then((table: any) => {
+    this.tableObj = JSON.parse(table);
     this.formData = JSON.parse(table).schema;
     console.log(this.formData);
     for(let form in this.formData){
@@ -172,8 +174,8 @@ async save(){
   }
 
   let data = {
-    form_schema_id:this.id,
-    form_schema:this.formData,
+    // form_schema_id:this.id,
+    form_schema:this.tableObj,
     data: this.saveData
   }
 
