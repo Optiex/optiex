@@ -57,12 +57,11 @@ export class LineChartComponent implements OnInit,OnChanges {
   }
 
   ngOnInit() {
-    console.log('LineChartComponent')
-    // console.log(this.title);
+    // console.log(this.series);
     this.data.chart_details.sensor.forEach((element:any,index:any) => {
       this.sensorsUUID.push(element.uuid);
       this.series.push({name: element.uuid, data:[]});
-      console.log(this.series);
+      // console.log(this.series);
     });
     this.chartConfig();
     this.drawChart();
@@ -190,32 +189,33 @@ export class LineChartComponent implements OnInit,OnChanges {
             x: this.convertUTCDateToLocalDate(data[key][0]['timestamp']).getTime(),
             parameters: data[key][0]['parameters']
           }
+          // console.log(this.series[i].data);
           this.series[i].data = this.series[i].data.concat([obj]);
           // console.log(this.series[i].data);
         }
       }
-    }
-    console.log(this.series);
-    this.chartOptions.series = this.series;
-    // console.log(this.chartOptions.series);
-    if(this.chart){
-      this.chart.updateSeries(this.series);
+      // console.log(this.series);
+      this.chartOptions.series = this.series;
+      // console.log(this.chartOptions.series);
+      if(this.chart){
+        this.chart.updateSeries(this.series);
+      }
     }
 
   }
 
   ngOnChanges(){
-    console.log(this.chart);
+    // console.log(this.chart);
   }
   ngOnDestroy(){
     this.socketSub.unsubscribe();
   }
 
   ionViewWillEnter() {
-    console.log('ionViewWillEnter');
+    // console.log('ionViewWillEnter');
   }
   ionViewDidEnter() {
-    console.log('ionViewDidEnter');
+    // console.log('ionViewDidEnter');
   }
 
   getSensorDataByAgeing(ageType:string) {
@@ -300,7 +300,7 @@ export class LineChartComponent implements OnInit,OnChanges {
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             parameters: data[i]["parameters"]
           }
-          console.log(obj)
+          // console.log(obj)
           lst.push(obj)
         }
       }

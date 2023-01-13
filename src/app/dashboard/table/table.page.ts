@@ -42,62 +42,62 @@ export class TablePage implements OnInit {
     }
 
     prepareForm() {
-      // this.formData =
-      //   {
-      //     "from_datetime": {
-      //       "data_type": "date",
-      //       "title": "From Date"
-      //     },
-      //     "to_datetime": {
-      //       "data_type": "datetime",
-      //       "title": "To Date"
-      //     },
-      //     "rows": {
-      //       "data_type": "list",
-      //       "title":"Table Rows",
-      //       "schema": {
-      //         "shift": {
-      //           "data_type": "dropdown",
-      //           "title": "To Date",
-      //           "values": [
-      //             {
-      //               "title": "Shift A",
-      //               "value": "A"
-      //             },
-      //             {
-      //               "title": "Shift B",
-      //               "value": "B"
-      //             },
-      //             {
-      //               "title": "Shift C",
-      //               "value": "C"
-      //             }
-      //           ]
-      //         },
-      //         "ton": {
-      //           "title": "Ton",
-      //           "data_type": "string"
-      //         }
-      //       },
-      //       "default_value": [
-      //         {
-      //           "shift":{
-      //             "title": "Shift A",
-      //             "value": "A"
-      //           }
-      //         },
-      //         {"shift":{
-      //           "title": "Shift B",
-      //           "value": "B"
-      //         }
-      //       },
-      //       {"shift":{
-      //         "title": "Shift C",
-      //         "value": "C"
-      //       }
-      //     }]
-      //     }
-      // };
+      this.formData =
+        {
+          "from_datetime": {
+            "data_type": "date",
+            "title": "From Date"
+          },
+          "to_datetime": {
+            "data_type": "datetime",
+            "title": "To Date"
+          },
+          "rows": {
+            "data_type": "list",
+            "title":"Table Rows",
+            "schema": {
+              "shift": {
+                "data_type": "dropdown",
+                "title": "To Date",
+                "values": [
+                  {
+                    "title": "Shift A",
+                    "value": "A"
+                  },
+                  {
+                    "title": "Shift B",
+                    "value": "B"
+                  },
+                  {
+                    "title": "Shift C",
+                    "value": "C"
+                  }
+                ]
+              },
+              "ton": {
+                "title": "Ton",
+                "data_type": "string"
+              }
+            },
+            "default_value": [
+              {
+                "shift":{
+                  "title": "Shift A",
+                  "value": "A"
+                }
+              },
+              {"shift":{
+                "title": "Shift B",
+                "value": "B"
+              }
+            },
+            {"shift":{
+              "title": "Shift C",
+              "value": "C"
+            }
+          }]
+          }
+      };
 
 
   this.storage.get('table').then((table: any) => {
@@ -197,7 +197,7 @@ async save(){
     const alert = await this.alertController.create({
       // header: '',
       // subHeader: 'Subtitle',
-      message: 'Saved Successfully!',
+      message: 'Something went wrong.',
       // buttons: ['OK']
     });
 
