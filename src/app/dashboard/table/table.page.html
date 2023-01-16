@@ -46,13 +46,15 @@
           <ion-accordion *ngFor="let table of tableData; index as i">
             <ion-item slot="header" color="light">
               <ion-label>Row {{i+1}}</ion-label>
+              <!-- <ion-label>{{tab.value}}</ion-label> -->
             </ion-item>
             <div class="ion-padding" slot="content">
               <ion-item *ngFor="let tab of table">
                 <ion-label position="stacked">{{tab.title}}</ion-label>
-                <ion-input *ngIf="tab.data_type == 'string'" type="text"  [(ngModel)]="tab.value"></ion-input>
-                <ion-input *ngIf="tab.data_type == 'number'" type="number" [(ngModel)]="tab.value"></ion-input>
-                <ion-select *ngIf="tab.data_type == 'dropdown'" [value]="tab.value" [(ngModel)]="tab.value">
+                <ion-input *ngIf="tab.data_type == 'string'" type="text" [required]="tab.required" [(ngModel)]="tab.value" ></ion-input>
+                <ion-input *ngIf="tab.data_type == 'number'" type="number" [required]="tab.required" [(ngModel)]="tab.value"></ion-input>
+                <ion-select *ngIf="tab.data_type == 'dropdown'" [value]="tab.value" [(ngModel)]="tab.value" [compareWith]="compareFn"
+                [required]="tab.required" [disabled]="tab.disabled">
                   <ion-select-option [value]="val" *ngFor="let val of tab.values">{{val.title}}</ion-select-option>
                 </ion-select>
               </ion-item>

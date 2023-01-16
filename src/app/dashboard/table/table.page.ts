@@ -121,8 +121,6 @@ export class TablePage implements OnInit {
         this.formData[form].title = 'Table Rows';
       }
     }
-    console.log(this.formData.rows);
-    console.log(this.formData.rows.default_value);
     this.formData.rows.default_value.forEach((elmt:any) => {
       let row = [];
       for(let shm in this.formData.rows.schema){
@@ -131,14 +129,15 @@ export class TablePage implements OnInit {
           data_type:this.formData.rows.schema[shm].data_type,
           value: elmt[shm],
           values: this.formData.rows.schema[shm].values,
-          field: shm
+          field: shm,
+          disabled: this.formData.rows.schema[shm].disabled || false,
+          required: this.formData.rows.schema[shm].required || false
         }
         row.push(obj);
       }
       this.tableData.push(row);
     });
 
-    console.log(this.tableData);
 
   });
 
@@ -147,28 +146,34 @@ export class TablePage implements OnInit {
 
 
 async save(){
-  const loading = await this.loadingController.create();
-  await loading.present();
 
+  let validation = false;
+  this.formData.rows.value = [];
   this.tableData.forEach((table:any) => {
     let obj:any = {};
     table.forEach((tab:any) => {
       obj[tab.field] = tab.value || null;
+      if(tab.required && !tab.value) {
+        validation = true;
+      }
     });
     this.formData.rows.value.push(obj)
   });
 
   for(let form in this.formData){
     if(this.formData[form].data_type == 'datetime'){
-      console.log(this.formData[form].value);
-      // this.formData[form].value = this.datepipe.transform(this.formData[form].value, 'dd/MM/yyyy hh:mm a')
-      this.formData[form].value = new Date(this.formData[form].value).getTime();
+      if(this.formData[form].required && !this.formData[form].value){
+        validation = true;
+      } else {
+        this.formData[form].value = new Date(this.formData[form].value).getTime();
+      }
     }
     if(this.formData[form].data_type == 'date'){
-      console.log(this.formData[form].value);
-      console.log(new Date(this.formData[form].value).getTime());
-      // this.formData[form].value = this.datepipe.transform(this.formData[form].value, 'dd/MM/yyyy')
-      this.formData[form].value = new Date(this.formData[form].value).getTime();
+      if(this.formData[form].required && !this.formData[form].value){
+        validation = true;
+      } else {
+        this.formData[form].value = new Date(this.formData[form].value).getTime();
+      }
     }
     this.saveData[form] = this.formData[form].value || null;
   }
@@ -179,36 +184,45 @@ async save(){
     data: this.saveData
   }
 
-  this.tableService.saveFormSchemaValue(data)
-  .subscribe(async (res:any) => {
-    await loading.dismiss();
+  if(validation) {
     const alert = await this.alertController.create({
-      // header: '',
-      // subHeader: 'Subtitle',
-      message: 'Saved Successfully!',
-      // buttons: ['OK']
+      header: 'Validation Error',
+      message: 'Please fill all required information.',
+      buttons: ['OK']
     });
     await alert.present();
+  } else {
+    const loading = await this.loadingController.create();
+    await loading.present();
+    this.tableService.saveFormSchemaValue(data)
+    .subscribe(async (res:any) => {
+      await loading.dismiss();
+      const alert = await this.alertController.create({
+        message: 'Saved Successfully!',
+      });
+      await alert.present();
 
-    this.location.back();
+      this.location.back();
 
-  }, async (res:any) => {
-    await loading.dismiss();
-    const alert = await this.alertController.create({
-      // header: '',
-      // subHeader: 'Subtitle',
-      message: 'Something went wrong.',
-      // buttons: ['OK']
+    }, async (res:any) => {
+      this.prepareForm();
+      await loading.dismiss();
+      const alert = await this.alertController.create({
+        message: 'Something went wrong.',
+      });
+
+      await alert.present();
     });
-
-    await alert.present();
-    console.log(res);
-  });
+  }
 
 }
 
 back(){
   this.location.back();
+}
+
+compareFn(e1: any, e2: any): boolean {
+  return e1 && e2 ? e1.value == e2.value : e1 == e2;
 }
 
 }

@@ -54,14 +54,13 @@ export class DashboardPage implements OnInit {
 
   ngOnInit() {
     console.log('DashboardPage')
-    this.getDepartmentList();
+    // this.getDepartmentList();
   }
 
   getDepartmentList() {
     this.dashboardService.getDepartmentList()
     .subscribe((data:any) => {
       console.log(data);
-
     });
   }
 
