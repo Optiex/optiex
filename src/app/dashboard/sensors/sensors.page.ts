@@ -23,6 +23,9 @@ export class SensorsPage implements OnInit {
 
   sensors:any = [];
   title:string = 'Sensors';
+  sensorsUUID:any = [];
+  dataLimit = 20;
+  graphs:any = [];
 
   constructor(public activatedRoute: ActivatedRoute,
     public http: HttpClient,
@@ -57,12 +60,41 @@ export class SensorsPage implements OnInit {
     //   console.log(err);
     // });
 
+    this.sensorsUUID = [];
     this.sensorService.getGraphs(this.id).subscribe((resp: any) => {
-      console.log(resp);
       this.sensors = resp.data;
-      console.log(this.sensors);
+      this.sensors.forEach((graph:any) => {
+        for (var i = 0; i < graph.chart_details.sensor.length; i++) {
+          this.sensorsUUID.push(graph.chart_details.sensor[i].uuid);
+        }
+      });
+
+      this.getSensorsData({
+        codes: this.sensorsUUID,
+        limit: this.dataLimit
+      }).then((data:any) => {
+        this.sensors.forEach((sen:any) => {
+          if([0, 2, 3].includes(sen.chart_details.graph_type)) { //line chart
+            for (var i = 0; i < sen.chart_details.sensor.length; i++) {
+              sen.chart_details.sensor[i].data = data[sen.chart_details.sensor[i].uuid];
+            }
+            this.graphs.push(sen);
+          }                                                      //add code for pumps else if
+        });
+        console.log(this.graphs);
+      });
+
     });
 
+  }
+
+  getSensorsData(data:any) {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      self.sensorService.getSensorsData(data).subscribe((resp: any) => {
+        resolve(resp);
+      });
+    });
   }
 
 

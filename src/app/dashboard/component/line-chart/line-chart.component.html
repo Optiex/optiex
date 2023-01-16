@@ -1,5 +1,5 @@
 <!-- <div #loader></div> -->
-<apx-chart #chart
+<apx-chart #chartDiv
   [series]="chartOptions?.series!"
   [chart]="chartOptions?.chart!"
   [xaxis]="chartOptions?.xaxis!"
@@ -15,5 +15,5 @@
   <ion-button size="small" [fill]="ageType == 'day' ? 'solid' : 'outline'" (click)="getSensorDataByAgeing('day')">D</ion-button>
   <ion-button size="small" [fill]="ageType == 'week' ? 'solid' : 'outline'" (click)="getSensorDataByAgeing('week')">W</ion-button>
   <ion-button size="small" [fill]="ageType == 'month' ? 'solid' : 'outline'" (click)="getSensorDataByAgeing('month')">M</ion-button>
-  <ion-button size="small" [fill]="ageType == 'halfYear' ? 'solid' : 'outline'" (click)="getSensorDataByAgeing('halfYear')">HF</ion-button>
+  <!-- <ion-button size="small" [fill]="ageType == 'halfYear' ? 'solid' : 'outline'" (click)="getSensorDataByAgeing('halfYear')">HF</ion-button> -->
 </div>

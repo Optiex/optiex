@@ -37,24 +37,19 @@ export type ChartOptions = {
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
-export class LineChartComponent implements OnInit {
+export class LineChartComponent implements OnInit,OnChanges {
 
-  @ViewChild("chartDiv",{static: false}) chartDiv: ChartComponent;
+  @ViewChild("chart",{static: false}) chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
-  @Input() chart:any;
-  @Input() dataLimit:any;
-  @Input() data:any;  //not used
-
-  chartData:any = {};
-
-
+  @Input() title: any;
+  series: any = [];
+  @Input() subtitle: any;
+  @Input() data: any;
   ageType:string = 'live';
-  socketSub:any;
-
-  series:any = [];
-
   sensorsUUID:any = [];
+  dataLimit = 20;
+  socketSub:any;
 
   constructor(public platform:Platform,
     public websocketService: WebSocketService,
@@ -62,21 +57,14 @@ export class LineChartComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.chartConfig();
-
-    this.chart.chart_details.sensor.forEach((element:any,index:any) => {
-      console.log(element)
+    // console.log(this.series);
+    this.data.chart_details.sensor.forEach((element:any,index:any) => {
       this.sensorsUUID.push(element.uuid);
+      this.series.push({name: element.uuid, data:[]});
+      // console.log(this.series);
     });
-
-    // Update data using websocket
-    this.websocketService.sensorData.subscribe(data => {
-      if (this.ageType == 'live') {
-        this.updateSocketData(data);
-      }
-    });
-
+    this.chartConfig();
+    this.drawChart();
   }
 
   chartConfig(){
@@ -152,66 +140,82 @@ export class LineChartComponent implements OnInit {
         }
       }
     };
+  }
+
+
+  drawChart() {
     setTimeout(() => {
-      this.drawChart(this.chart);
-    }, 100);
+
+      // let data = [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 }];
+      // this.series.push({'name':'SIS090572-PV33','data':data});
+
+      // this.chartOptions.series = this.series;
+      // console.log(this.chartOptions.series)
+      this.getSensorDataByAgeing('live');
+      this.chartOptions.title = {
+        text:this.title,
+        align: "left",
+        style: {
+          fontSize: '20px'
+        }
+      };
+      this.chartOptions.subtitle = {
+        text:this.subtitle,
+        align: "left",
+        style: {
+          fontSize: '14px'
+        }
+      };
+      this.chartOptions.yaxis = {
+        title: { text: this.data.chart_details.sensor[0]['unit_disp']}
+      };
+
+      this.socketSub =  this.websocketService.sensorData.subscribe(data => {
+        if (this.ageType == 'live') { // live graph check
+          this.updateSocketData(data);
+        }
+      });
+
+    },500)
   }
 
-
-
-  drawChart(graph:any) {
-
-    this.chartOptions.title = {
-      text:'test',
-      align: "left",
-      style: {
-        fontSize: '20px'
+  updateSocketData(data:any) {
+    // console.log(data);
+    for (let key in data) {
+      for (let i = 0; i < this.series.length; i++) {
+        if (this.series[i]['name'] == key) {
+          let obj = {
+            y: data[key][0]['value'].toFixed(2),
+            x: this.convertUTCDateToLocalDate(data[key][0]['timestamp']).getTime(),
+            parameters: data[key][0]['parameters']
+          }
+          // console.log(this.series[i].data);
+          this.series[i].data = this.series[i].data.concat([obj]);
+          // console.log(this.series[i].data);
+        }
       }
-    };
-    this.chartOptions.subtitle = {
-      text:'test1',
-      align: "left",
-      style: {
-        fontSize: '14px'
+      // console.log(this.series);
+      this.chartOptions.series = this.series;
+      // console.log(this.chartOptions.series);
+      if(this.chart){
+        this.chart.updateSeries(this.series);
       }
-    };
-    this.chartOptions.yaxis = {
-      title: { text: this.chart.chart_details.sensor[0]['unit_disp']}
-    };
-
-    for (var i = 0; i < this.chart.chart_details.sensor.length; i++) {
-      if (!this.isNullOrUndefined(graph.chart_details.sensor[i]['equipment'])) {
-        // this.dataObj['title'] = graph.chart_details.sensor[i]['equipment']['name']
-        this.chartOptions.title.text = graph.chart_details.sensor[i]['equipment']['name'];
-      } else {
-        this.chartOptions.title.text = graph.chart_details.sensor[i]['department']['name'];
-      }
-      this.chartOptions.subtitle.text = graph.chart_details.sensor[i]['measured_parameter_type_disp'];
-      this.chartOptions.yaxis.title = graph.chart_details.sensor[i]['unit_disp']
-
-      this.chartData[graph.chart_details.sensor[i].uuid] =
-      this.getGraphDataArray(graph.chart_details.sensor[i]['data'],graph.chart_details.sensor[i].uuid);
-
-      console.log(this.chartData);
-
     }
 
-    for(let cd in this.chartData) {
-      this.series.push({name:cd,data:this.chartData[cd][0].data});
-    }
-
-    // let data = [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 }];
-    // this.series.push({'name':'SIS090572-PV33','data':data});
-    // this.series.push({'name':'SIS090572-PV34','data':data});
-    console.log(this.series)
-    this.chartOptions.series = this.series;
-    if(this.chartDiv){
-      this.chartDiv.updateSeries(this.series);
-    }
   }
 
+  ngOnChanges(){
+    // console.log(this.chart);
+  }
   ngOnDestroy(){
-    // this.socketSub.unsubscribe();
+    this.socketSub.unsubscribe();
+  }
+
+  ionViewWillEnter() {
+    // console.log('ionViewWillEnter');
+  }
+  ionViewDidEnter() {
+    // console.log('ionViewDidEnter');
   }
 
   getSensorDataByAgeing(ageType:string) {
@@ -248,79 +252,15 @@ export class LineChartComponent implements OnInit {
       todayDate.setDate(todayDate.getDate() - 182);
       data["start_date"] = todayDate.getTime();
     }
-
+    this.chartOptions.series = [];
     this.sensorService.getSensorsData(data).subscribe((resp: any) => {
       for (let i = 0; i < this.sensorsUUID.length; i++) {
         var key = this.sensorsUUID[i];
         this.chartOptions.series = this.getGraphDataArray(resp[key],key);
       }
     });
+
   }
-
-  updateSocketData(data:any) {
-    for (let key in data) {
-      for (let j = 0; j < this.series.length; j++) {
-        if (this.series[j]['name'] == key) {
-          console.log(data[key]);
-          if (this.series[j]['data'].length == this.dataLimit + 2) {
-            this.series[j]['data'] = this.series[j]['data'].concat(
-              this.getGraphConvertedDataLive(data,key)
-            ).slice(2);
-          } else {
-            this.series[j]['data'] = this.series[j]['data'].concat(
-              this.getGraphConvertedDataLive(data,key)
-            )
-          }
-          console.log(this.series[j]);
-        }
-      }
-    }
-    this.chartOptions.series = this.series;
-    if(this.chartDiv){
-      this.chartDiv.updateSeries(this.series);
-    }
-  }
-
-  getGraphConvertedDataLive(data:any, key:any) {
-    if (!this.isNullOrUndefined(data)) {
-      let lst = [];
-        if (!this.isNullOrUndefined(data[key][0]["alert"]) &&
-         data[key][0]["alert"]["status"] && data[key][0]["alert"]["alert_type"] != 'error_code') {
-
-          var marker = {
-            fillColor: "red",
-            lineWidth: 3,
-            lineColor: "#FF0000",
-            states: {
-              hover: {
-                fillColor: "red",
-                lineColor: "red"
-              }
-            }
-          };
-          let obj = {
-            y: data[key][0]["value"].toFixed(3),
-            x: this.convertUTCDateToLocalDate(data[key][0]["timestamp"]).getTime(),
-            marker: marker,
-            alert: data[key][0]["alert"],
-            parameters: data[key][0]["parameters"]
-          };
-
-          lst.push(obj);
-        } else {
-          let obj = {
-            y: data[key][0]["value"].toFixed(3),
-            x: this.convertUTCDateToLocalDate(data[key][0]["timestamp"]).getTime(),
-            parameters: data[key][0]["parameters"]
-          }
-          lst.push(obj)
-        }
-      return lst;
-    } else {
-      return [];
-    }
-  }
-
 
   getGraphDataArray(data:any, key:any, isNotify?:any) {
     var sensorData = [];
@@ -342,7 +282,7 @@ export class LineChartComponent implements OnInit {
             }
           };
           let obj = {
-            y: data[i]["value"].toFixed(3),
+            y: data[i]["value"].toFixed(2),
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             marker: marker,
             alert: data[i]["alert"],
@@ -356,7 +296,7 @@ export class LineChartComponent implements OnInit {
           }
         } else if (data[i]["alert"]["alert_type"] != 'error_code') {
           let obj = {
-            y: data[i]["value"].toFixed(3),
+            y: data[i]["value"].toFixed(2),
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             parameters: data[i]["parameters"]
           }

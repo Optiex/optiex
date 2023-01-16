@@ -25,10 +25,11 @@ export type ChartOptions = {
 })
 export class SemiCircleChartComponent implements OnInit {
 
-  @ViewChild("chart",{static: false}) chart: ChartComponent;
+  @ViewChild("chartDiv",{static: false}) chartDiv: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
   @Input() title: any;
+  @Input() chart: any;
   series: any = [];
   @Input() subtitle: any;
   @Input() data: any;
