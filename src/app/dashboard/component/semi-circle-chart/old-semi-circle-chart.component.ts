@@ -33,46 +33,12 @@ export class SemiCircleChartComponent implements OnInit {
   series: any = [];
   @Input() subtitle: any;
   @Input() data: any;
-  chartData:any = {};
 
   constructor(public websocketService: WebSocketService) { }
 
   ngOnInit() {
     this.chartConfig();
     this.drawChart();
-
-    this.chartOptions = this.getGraphData();
-    this.chartOptions.series = this.getGraphDataArray()
-    console.log(this.chartData, this.chartOptions)
-    this.websocketService.sensorData.subscribe(data => {
-      this.updateSocketData(data);
-    });
-
-  }
-
-  getGraphData() {
-    var chart = eval("(" + this.chart.chart_details.javascript.replace(/[^\x20-\x7E]/gim, "") + ")")
-    return chart
-  }
-
-  getGraphDataArray() {
-    var sensorData = [];
-    for (var i = 0; i < this.chart.chart_details.sensor.length; i++) {
-      if (!this.isNullOrUndefined(this.chart.chart_details.sensor[i]['data']) && this.chart.chart_details.sensor[i]['data'].length > 0) {
-        if (!this.isNullOrUndefined(this.chart.chart_details.sensor[i]['equipment'])) {
-          this.chartData['title'] = this.chart.chart_details.sensor[i]['equipment']['name']
-        } else {
-          this.chartData['title'] = this.chart.chart_details.sensor[i]['department']['name']
-        }
-        this.chartData['unit_disp'] = this.chart.chart_details.sensor[0]['unit_disp']
-        for (var j = 0; j < 1; j++) {
-          sensorData.push(Math.round(this.chart.chart_details.sensor[i]['data'][j]["value"] * 100) / 100);
-        }
-      } else {
-        sensorData.push(0);
-      }
-    }
-    return sensorData
   }
 
   drawChart(){
@@ -89,19 +55,23 @@ export class SemiCircleChartComponent implements OnInit {
   }
 
   updateSocketData(data:any) {
-    if (Object.keys(data).length != 0) {
-      if (this.chart.chart_details.sensor.length > 0 &&
-        !this.isNullOrUndefined(data[this.chart.chart_details.sensor[0]['uuid']]) &&
-        !this.isNullOrUndefined(this.chartOptions) &&
-        !this.isNullOrUndefined(this.chartOptions.series)){
-
-        console.log("update", this.chart)
-        var point = this.chartOptions.series[0];
-        this.chartOptions.series = this.getGraphDataArray();
-        // Math.round(data[this.chart.chart_details.sensor[0]['uuid']][0]["value"] * 100) / 100
-
+    for (let key in data) {
+      for (let i = 0; i < this.series.length; i++) {
+        if (this.series[i]['name'] == key) {
+          let obj = {
+            y: data[key][0]['value'],
+            x: this.convertUTCDateToLocalDate(data[key][0]['timestamp']).getTime(),
+            parameters: data[key][0]['parameters']
+          }
+          this.series[i].data = this.series[i].data.concat([obj]);
+          // console.log(this.series[i].data);
+        }
       }
     }
+    this.chartOptions.series = this.series;
+    // console.log(this.chartOptions.series);
+    this.chart.updateSeries(this.series);
+
   }
 
   convertUTCDateToLocalDate(date:any) {
