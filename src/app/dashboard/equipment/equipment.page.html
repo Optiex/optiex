@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngFor="let grap of graphs; let index">
+
+    <!-- <ion-card-content *ngIf="grap.chart_details.graph_type==3">
+      <app-semi-circle-chart [chart]="grap"></app-semi-circle-chart>
+    </ion-card-content> -->
+
+    <ion-card-content *ngIf="grap.chart_details.graph_type==0">
+      <ion-icon name="square-outline" (click)="showGraphOnFrontPage(grap,grap.chart_details.id)" *ngIf="!grap.chart_details.is_front" class="large"></ion-icon>
+      <ion-icon name="checkbox-outline" (click)="showGraphOnFrontPage(grap,grap.chart_details.id)" *ngIf="grap.chart_details.is_front" class="large checked"></ion-icon>
+      <ion-label class="pl-5">Show Front</ion-label>
+      <app-line-chart [chart]="grap" [data]="grap.data" [dataLimit]="dataLimit"></app-line-chart>
+    </ion-card-content>
+
+    <!-- <app-column-chart [title]="sensor.chart_details.sensor[0].equipment.name" [subtitle]="sensor.chart_details.sensor[0].measured_parameter_type_disp" [data]="sensor"></app-column-chart> -->
+
+  </ion-card>
+
+</ion-content>

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{equipments[0]?.department_name}}</ion-title>
   </ion-toolbar>
@@ -10,7 +10,7 @@
 <ion-content>
 
   <ion-list>
-    <ion-item (click)="gotoSensors(equip.id)" *ngFor="let equip of equipments">
+    <ion-item (click)="gotoSensors(equip)" *ngFor="let equip of equipments">
       <ion-label>{{equip.name}}</ion-label>
       <ion-badge slot="end">{{equip.sensors_count}}</ion-badge>
     </ion-item>

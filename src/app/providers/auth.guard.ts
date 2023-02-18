@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
       return await this.checkAuth();
   }
   private async checkAuth() {
-    let user = await this.storage.get('user');
+    let user = await this.storage.get(USER_KEY);
     if(user){
       return true;
     } else {

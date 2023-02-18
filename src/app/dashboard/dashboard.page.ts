@@ -48,7 +48,7 @@ export class DashboardPage implements OnInit {
     storage.get(USER_KEY).then((toke:any) => {
       this.user = JSON.parse(toke).user;
       this.role = JSON.parse(toke).role;
-      this.websocket(JSON.parse(toke).sessionid)
+      // this.websocket(JSON.parse(toke).sessionid)
     });
   }
 
@@ -64,22 +64,22 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  websocket(sessionid:any) {
-    var self = this;
-    var socket = new WebSocket(
-      'wss://analytics.optiex.co.in:1994/?session_key='+sessionid
-    );
-    socket.onmessage = function(e) {
-      var data = JSON.parse(e.data);
-      self.websocketService.changeData(data);
-    };
-    socket.onopen = function() {
-      self.websocketService.socket = socket;
-    };
-    if (socket.readyState == WebSocket.OPEN) {
-      socket.onopen(event as any);
-    }
-  }
+  // websocket(sessionid:any) {
+  //   var self = this;
+  //   var socket = new WebSocket(
+  //     'wss://analytics.optiex.co.in:1994/?session_key='+sessionid
+  //   );
+  //   socket.onmessage = function(e) {
+  //     var data = JSON.parse(e.data);
+  //     self.websocketService.changeData(data);
+  //   };
+  //   socket.onopen = function() {
+  //     self.websocketService.socket = socket;
+  //   };
+  //   if (socket.readyState == WebSocket.OPEN) {
+  //     socket.onopen(event as any);
+  //   }
+  // }
 
   logout(){
     this.navCtrl.navigateRoot('/login');

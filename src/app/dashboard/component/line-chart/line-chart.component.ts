@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Platform } from '@ionic/angular';
 
 import {
@@ -17,6 +17,7 @@ import {
 } from "ng-apexcharts";
 import { WebSocketService } from 'src/app/web-socket.service';
 import { SensorService } from '../../sensors/sensor.service';
+import { Storage } from '@ionic/storage-angular';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -31,13 +32,13 @@ export type ChartOptions = {
   legend: ApexLegend;
   tooltip: ApexTooltip;
 };
-
+const USER_KEY = 'user';
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
-export class LineChartComponent implements OnInit {
+export class LineChartComponent implements OnInit,OnDestroy,AfterViewInit {
 
   @ViewChild("chartDiv",{static: false}) chartDiv: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
@@ -51,30 +52,34 @@ export class LineChartComponent implements OnInit {
 
   ageType:string = 'live';
   socketSub:any;
+  user:any;
+  role:any;
 
   series:any = [];
 
   sensorsUUID:any = [];
+  socket:any;
+
+  public isActive = false; //to stop subscription
 
   constructor(public platform:Platform,
+    private storage: Storage,
     public websocketService: WebSocketService,
     public sensorService: SensorService) {
+
   }
 
   ngOnInit() {
-
+    this.isActive = true;
     this.chartConfig();
-
+    this.storage.get(USER_KEY).then((toke:any) => {
+      this.user = JSON.parse(toke).user;
+      this.role = JSON.parse(toke).role;
+      this.websocket(JSON.parse(toke).sessionid)
+    });
     this.chart.chart_details.sensor.forEach((element:any,index:any) => {
       console.log(element)
       this.sensorsUUID.push(element.uuid);
-    });
-
-    // Update data using websocket
-    this.websocketService.sensorData.subscribe(data => {
-      if (this.ageType == 'live') {
-        this.updateSocketData(data);
-      }
     });
 
   }
@@ -86,13 +91,18 @@ export class LineChartComponent implements OnInit {
       //   show: false
       // },
       tooltip: {
-        enabled:false,
-        shared:true,
-        custom: function({series, seriesIndex, dataPointIndex, w}) {
-          return '<div class="arrow_box">' +
-            '<span>' + series[seriesIndex][dataPointIndex] + '</span>' +
-            '</div>'
+        enabled:true,
+        // shared:true,
+        x:{
+          show: true,
+          format: 'dd MMM yyyy',
+          formatter: undefined,
         }
+        // custom: function({series, seriesIndex, dataPointIndex, w}) {
+        //   return '<div class="arrow_box">' +
+        //     '<span>' + series[seriesIndex][dataPointIndex] + '</span>' +
+        //     '</div>'
+        // }
       },
       chart: {
         height: 350,
@@ -137,24 +147,34 @@ export class LineChartComponent implements OnInit {
       },
       xaxis: {
         type: 'datetime',
+        // tickAmount: 6,
         labels: {
-          datetimeFormatter: {
-            year: 'yyyy',
-            month: 'MMM \'yy',
-            day: 'dd MMM',
-            hour: 'HH:mm'
-          }
+          // formatter: function (value) {
+          //   return '' + new Date(value).getDate() +'/'+ new Date(value).getMonth() + 1 +'/'+ new Date(value).getFullYear();
+          // }
+          format: 'MMM HH:mm'
+          // datetimeFormatter: {
+          //   year: 'yyyy',
+            // month: 'MMM \'yy',
+            // day: 'dd MMM',
+            // hour: 'HH:mm'
+          // }
         }
       },
       yaxis: {
         title: {
           text: 'abc'
+        },
+        labels:{
+          formatter: function(value:any) {
+            return parseFloat(value.toFixed(2)) + '';
+          }
         }
       }
     };
     setTimeout(() => {
       this.drawChart(this.chart);
-    }, 100);
+    }, 500);
   }
 
 
@@ -187,31 +207,48 @@ export class LineChartComponent implements OnInit {
         this.chartOptions.title.text = graph.chart_details.sensor[i]['department']['name'];
       }
       this.chartOptions.subtitle.text = graph.chart_details.sensor[i]['measured_parameter_type_disp'];
-      this.chartOptions.yaxis.title = graph.chart_details.sensor[i]['unit_disp']
+      this.chartOptions.yaxis = {
+        title : {text : graph.chart_details.sensor[i]['unit_disp']} //not working
+      }
 
       this.chartData[graph.chart_details.sensor[i].uuid] =
       this.getGraphDataArray(graph.chart_details.sensor[i]['data'],graph.chart_details.sensor[i].uuid);
 
-      console.log(this.chartData);
+      // console.log(this.chartData);
 
     }
 
     for(let cd in this.chartData) {
-      this.series.push({name:cd,data:this.chartData[cd][0].data});
+      if(this.chartData[cd][0]){
+        this.series.push({name:cd,data:this.chartData[cd][0].data});
+      }
     }
 
     // let data = [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 }];
     // this.series.push({'name':'SIS090572-PV33','data':data});
     // this.series.push({'name':'SIS090572-PV34','data':data});
-    console.log(this.series)
+    // console.log(this.series)
     this.chartOptions.series = this.series;
     if(this.chartDiv){
       this.chartDiv.updateSeries(this.series);
     }
   }
 
+  ngAfterViewInit() {
+    if(this.isActive){
+      // Update data using websocket
+      this.websocketService.sensorData.subscribe((data:any) => {
+        if (this.ageType == 'live') {
+          // console.log(data);
+          this.updateSocketData(data);
+        }
+      });
+    }
+  }
+
   ngOnDestroy(){
-    // this.socketSub.unsubscribe();
+    this.isActive = false;
+    this.socket.close();
   }
 
   getSensorDataByAgeing(ageType:string) {
@@ -257,11 +294,27 @@ export class LineChartComponent implements OnInit {
     });
   }
 
+  websocket(sessionid:any) {
+    var self = this;
+    this.socket = new WebSocket(
+      'wss://analytics.optiex.co.in:1994/?session_key='+sessionid
+    );
+    this.socket.onmessage = function(e:any) {
+      var data = JSON.parse(e.data);
+      self.websocketService.changeData(data);
+    };
+    this.socket.onopen = function() {
+      self.websocketService.socket = this.socket;
+    };
+    if (this.socket.readyState == WebSocket.OPEN) {
+      this.socket.onopen(event as any);
+    }
+  }
+
   updateSocketData(data:any) {
     for (let key in data) {
       for (let j = 0; j < this.series.length; j++) {
         if (this.series[j]['name'] == key) {
-          console.log(data[key]);
           if (this.series[j]['data'].length == this.dataLimit + 2) {
             this.series[j]['data'] = this.series[j]['data'].concat(
               this.getGraphConvertedDataLive(data,key)
@@ -271,13 +324,13 @@ export class LineChartComponent implements OnInit {
               this.getGraphConvertedDataLive(data,key)
             )
           }
-          console.log(this.series[j]);
         }
       }
     }
-    this.chartOptions.series = this.series;
-    if(this.chartDiv){
-      this.chartDiv.updateSeries(this.series);
+
+    if(this.chartDiv && this.series.length > 0){
+      this.chartOptions.series = this.series;
+      // this.chartDiv.updateSeries(this.series);
     }
   }
 
@@ -299,7 +352,7 @@ export class LineChartComponent implements OnInit {
             }
           };
           let obj = {
-            y: data[key][0]["value"].toFixed(3),
+            y: parseFloat(data[key][0]["value"].toFixed(3)),
             x: this.convertUTCDateToLocalDate(data[key][0]["timestamp"]).getTime(),
             marker: marker,
             alert: data[key][0]["alert"],
@@ -309,7 +362,8 @@ export class LineChartComponent implements OnInit {
           lst.push(obj);
         } else {
           let obj = {
-            y: data[key][0]["value"].toFixed(3),
+            y: parseFloat(data[key][0]["value"].toFixed(3)),
+            // y: ''+(data[key][0]["value"] / 1000 < 1 ? data[key][0]["value"] + 'M' : data[key][0]["value"] / 1000 + 'B'),
             x: this.convertUTCDateToLocalDate(data[key][0]["timestamp"]).getTime(),
             parameters: data[key][0]["parameters"]
           }
@@ -342,7 +396,7 @@ export class LineChartComponent implements OnInit {
             }
           };
           let obj = {
-            y: data[i]["value"].toFixed(3),
+            y: parseFloat(data[i]["value"].toFixed(3)),
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             marker: marker,
             alert: data[i]["alert"],
@@ -356,7 +410,7 @@ export class LineChartComponent implements OnInit {
           }
         } else if (data[i]["alert"]["alert_type"] != 'error_code') {
           let obj = {
-            y: data[i]["value"].toFixed(3),
+            y: parseFloat(data[i]["value"].toFixed(2)),
             x: this.convertUTCDateToLocalDate(data[i]["timestamp"]).getTime(),
             parameters: data[i]["parameters"]
           }

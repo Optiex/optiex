@@ -21,6 +21,10 @@ const routes: Routes = [
         loadChildren: () => import('./equipments/equipments.module').then( m => m.EquipmentsPageModule)
       },
       {
+        path: 'equipment/:id',
+        loadChildren: () => import('./equipment/equipment.module').then( m => m.EquipmentPageModule)
+      },
+      {
         path: 'sensors/:id',
         loadChildren: () => import('./sensors/sensors.module').then( m => m.SensorsPageModule)
       },
@@ -46,6 +50,10 @@ const routes: Routes = [
   {
     path: 'table/:id',
     loadChildren: () => import('./table/table.module').then( m => m.TablePageModule)
+  },
+  {
+    path: 'equipment',
+    loadChildren: () => import('./equipment/equipment.module').then( m => m.EquipmentPageModule)
   }
 
 ];
